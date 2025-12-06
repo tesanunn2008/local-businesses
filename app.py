@@ -73,7 +73,6 @@ def businesses():
         LEFT JOIN business_rating br ON b.id = br.business_id AND br.user_id = ?
     """, (session["user_id"],session["user_id"],))
 
-
     rows = cur.fetchall()
 
     return render_template("businesses.html", name=session["first"], businesses=rows)
@@ -96,7 +95,7 @@ def rate(bus_id, rating):
         SELECT id FROM business_rating
         WHERE business_id = ?
         AND user_id = ?
-    """, (bus_id, session["user_id"]))
+    """, (bus_id,session["user_id"]))
     
     existing_rating = cur.fetchone()
     
@@ -111,9 +110,8 @@ def rate(bus_id, rating):
     else:
         # Insert new rating
         cur.execute("""
-            INSERT INTO business_rating (business_id, rating)
-            VALUES (?, ?)
-            AND user_id = ?
+            INSERT INTO business_rating (business_id, rating, user_id)
+            VALUES (?, ?, ?)
         """, (bus_id, rating, session["user_id"]))
 
     conn.commit()

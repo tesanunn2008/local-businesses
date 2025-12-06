@@ -48,15 +48,10 @@ def main():
     """)
 
     businesses = [
-        ("Mike's Pizza", "123 Pizza Blvd. Trinity FL 34655", "Restaurant", "7271000001", "mikspizza.tesabiz.com","20% off new customer"),
-        ("Jose's Tacos", "123 Taco Blvd. Trinity FL 34655", "Restaurant", "7271000002", "josestacos.tesabiz.com",""),
-        ("Joey`s Italian", "123 Italian Blvd. Trinity FL 34655", "Restaurant", "7271000003", "joeysitalian.tesabiz.com","Buy 2 get one free"),
-        ("Starkey Market", "123 Market Blvd. Trinity FL 34655", "Market", "7271000004", "starkeymarket.tesabiz.com",""),
-        ("Bob`s Plumbing", "123 Plumbing Blvd. Trinity FL 34655", "Service", "7271000005", "bobsplumbing.tesabiz.com",""),
-        ("Lia`s Flowers", "123 Flowers Blvd. Trinity FL 34655", "Market", "7271000006", "liasflowers.tesabiz.com","Roses half off"),
-        ("Tyler`s Flooring", "123 Flooring Blvd. Trinity FL 34655", "Service", "7271000007", "tylersflooring.tesabiz.com",""),
-        ("John`s Handyman", "123 Handyman Blvd. Trinity FL 34655", "Service", "7271000008", "johnshandyman.tesabiz.com",""),
-        ("Haruki  Sushi", "123 Sushi Blvd. Trinity FL 34655", "Restaurant", "7271000009", "harukisushi.tesabiz.com","")
+        ("Mike's Pizza", "123 Pizza Blvd. Trinity FL 34655", "Restaurant", "7271000001", "mikspizza.tesabiz.com", "10% off your first order!"),
+        ("Jose's Tacos", "123 Taco Blvd. Trinity FL 34655", "Restaurant", "7271000002", "josestacos.tesabiz.com", "Free drink with purchase of 3 tacos!"),
+        ("Sally's Salon", "456 Beauty St. Trinity FL 34655", "Salon", "7272000001", "sallyssalon.tesabiz.com", ""),
+        ("Pete's Plumbing", "789 Fixit Ave. Trinity FL 34655", "Home Services", "7273000001", "petesplumbing.tesabiz.com", "Free estimates on all jobs!")
     ]
 
     cur.executemany(
@@ -80,8 +75,8 @@ def main():
         CREATE TABLE IF NOT EXISTS business_rating (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             business_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
             rating INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,                
             UNIQUE(user_id, business_id)
         )
     """)
