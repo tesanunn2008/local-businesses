@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Local Businesses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 30px;
+        }
+        .traffic-light {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        .light {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 20px;
+            cursor: pointer;
+            border: 3px solid #333;
+            transition: transform 0.2s;
+        }
+        .light:hover {
+            transform: scale(1.1);
+        }
+        .red {
+            background-color: #ff3b30;
+        }
+        .yellow {
+            background-color: #ffcc00;
+        }
+        .green {
+            background-color: #34c759;
+        }
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .highlight {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .highlight-red {
+            color: #ff3b30;
+        }
+        .highlight-yellow {
+            color: #ffcc00;
+        }
+        .highlight-green {
+            color: #34c759;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Verify that you are a human!!!!!</h2>
+
+<div class="instructions">
+    <p>Please click on the <span class="highlight highlight-{{ expected_color }}">{{ expected_color }}</span> traffic light to continue.</p>
+</div>
+
+<form method="POST">
+    <div class="traffic-light">
+        <input type="radio" name="traffic_light" value="red" id="red" style="display: none;">
+        <label for="red" class="light red"></label>
+        
+        <input type="radio" name="traffic_light" value="yellow" id="yellow" style="display: none;">
+        <label for="yellow" class="light yellow"></label>
+        
+        <input type="radio" name="traffic_light" value="green" id="green" style="display: none;">
+        <label for="green" class="light green"></label>
+    </div>
+    
+    <button type="submit" style="display: none;" id="submit-btn">Continue</button>
+</form>
+
+<script>
+    // Auto-submit form when a traffic light is clicked
+    document.querySelectorAll('.light').forEach(light => {
+        light.addEventListener('click', function() {
+            setTimeout(() => {
+                document.getElementById('submit-btn').click();
+            }, 300);
+        });
+    });
+</script>
+
+</body>
+</html>

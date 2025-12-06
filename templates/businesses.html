@@ -1,18 +1,112 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Businesses</title>
+    <title>Local Businesses</title>
+    <style>
+        .rating {
+            display: inline-block;
+        }
+        .rating a {
+            text-decoration: none;
+            font-size: 1.5em;
+            margin-right: 2px;
+        }
+        .star-filled {
+            color: gold;
+        }
+        .star-empty {
+            color: #ccc;
+        }
+        .rating a:hover {
+            color: orange;
+        }
+        .favorite-cell {
+            text-align: center;
+        }
+        .favorite-heart {
+            font-size: 1.5em;
+            text-decoration: none;
+        }
+        th {
+            cursor: pointer;
+            background-color: #f2f2f2;
+            padding: 8px;
+            position: relative;
+        }
+        th:hover {
+            background-color: #ddd;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
 
     <script>
-    function sortTable(col) {
+    // Track sort direction for each column
+    let sortDirections = {};
+    
+    function sortTable(colIndex) {
         let table = document.getElementById("bizTable");
-        let rows = [...table.rows].slice(1);
-
-        let sorted = rows.sort((a, b) =>
-            a.cells[col].innerText.localeCompare(b.cells[col].innerText)
-        );
-
-        for (let r of sorted) table.appendChild(r);
+        let rows = Array.from(table.rows).slice(1); // skip header
+        
+        // Toggle sort direction or set to ascending if first time
+        sortDirections[colIndex] = sortDirections[colIndex] === 'asc' ? 'desc' : 'asc';
+        let direction = sortDirections[colIndex];
+        
+        rows.sort((a, b) => {
+            let valA = a.cells[colIndex].innerText.toLowerCase();
+            let valB = b.cells[colIndex].innerText.toLowerCase();
+            
+            // For rating column, extract the actual rating value
+            if (colIndex === 2) {
+                // Count filled stars (gold ones)
+                const starsA = a.cells[colIndex].querySelectorAll('.star-filled').length;
+                const starsB = b.cells[colIndex].querySelectorAll('.star-filled').length;
+                return direction === 'asc' ? starsA - starsB : starsB - starsA;
+            }
+            
+            // For favorite column, sort hearts first or last
+            if (colIndex === 1) {
+                const heartA = valA.includes('❤️');
+                const heartB = valB.includes('❤️');
+                if (heartA !== heartB) {
+                    return direction === 'asc' ?
+                        (heartA ? -1 : 1) :
+                        (heartA ? 1 : -1);
+                }
+            }
+            
+            // Default string comparison
+            return direction === 'asc' ?
+                valA.localeCompare(valB) :
+                valB.localeCompare(valA);
+        });
+        
+        rows.forEach(r => table.appendChild(r));
+        
+        // Update header to show sort direction
+        updateSortIndicators(colIndex, direction);
+    }
+    
+    function updateSortIndicators(activeCol, direction) {
+        const headers = document.querySelectorAll('#bizTable th');
+        headers.forEach((header, index) => {
+            // Remove existing indicators
+            header.textContent = header.textContent.replace(' ▲', '').replace(' ▼', '');
+            
+            // Add indicator to active column
+            if (index === activeCol) {
+                header.textContent += direction === 'asc' ? ' ▲' : ' ▼';
+            }
+        });
     }
     </script>
 </head>
@@ -23,32 +117,48 @@
 <a href="/logout">Logout</a>
 <br><br>
 
-<table border="1" id="bizTable">
+<table id="bizTable">
     <tr>
         <th onclick="sortTable(0)">Name</th>
-        <th onclick="sortTable(1)">Address</th>
-        <th onclick="sortTable(2)">Category</th>
-        <th onclick="sortTable(3)">Website</th>
-        <th onclick="sortTable(4)">Phone</th>
-        <th onclick="sortTable(5)">Coupons</th>
-        <th onclick="sortTable(6)">Ratings</th>
-        <th>Actions</th>
+        <th onclick="sortTable(1)">Favorite?</th>
+        <th onclick="sortTable(2)">User Rating</th>
+        <th onclick="sortTable(3)">Address</th>
+        <th onclick="sortTable(4)">Category</th>
+        <th onclick="sortTable(5)">Website</th>
+        <th onclick="sortTable(6)">Phone</th>
+        <th onclick="sortTable(7)">Deals</th>
     </tr>
 
     {% for b in businesses %}
     <tr>
         <td>{{ b[1] }}</td>
+        <!-- Favorite column -->
+        <td class="favorite-cell">
+            <a href="/favorite/{{ b[0] }}" class="favorite-heart">
+                {% if b[6] == 1 %}
+                    ❤️
+                {% else %}
+                    🤍
+                {% endif %}
+            </a>
+        </td>
+
+        <!-- Rating column -->
+        <td>
+            <div class="rating">
+                <a href="/rate/{{ b[0] }}/1" class="{% if b[7] >= 1 %}star-filled{% else %}star-empty{% endif %}">★</a>
+                <a href="/rate/{{ b[0] }}/2" class="{% if b[7] >= 2 %}star-filled{% else %}star-empty{% endif %}">★</a>
+                <a href="/rate/{{ b[0] }}/3" class="{% if b[7] >= 3 %}star-filled{% else %}star-empty{% endif %}">★</a>
+                <a href="/rate/{{ b[0] }}/4" class="{% if b[7] >= 4 %}star-filled{% else %}star-empty{% endif %}">★</a>
+                <a href="/rate/{{ b[0] }}/5" class="{% if b[7] >= 5 %}star-filled{% else %}star-empty{% endif %}">★</a>
+            </div>
+        </td>
         <td>{{ b[2] }}</td>
         <td>{{ b[3] }}</td>
         <td><a href="{{ b[4] }}" target="_blank">{{ b[4] }}</a></td>
-        <td>{{ b[5] }}</td>
-        <td>{{ b[6] }}</td>
-        <td>{{ b[7] }}</td>
+        <td>{{ b[5][:3] }}-{{ b[5][3:6] }}-{{ b[5][-4:] }}</td>
+        <td>{{ b[8] }}</td>
 
-        <td>
-            <a href="/rate/{{ b[0] }}/5">Rate 5★</a> |
-            <a href="/favorite/{{ b[0] }}">Favorite</a>
-        </td>
     </tr>
     {% endfor %}
 </table>

@@ -1,6 +1,11 @@
 import sqlite3
+import os
+
 
 def main():
+    # drop database if exists
+    os.remove("business_app.db")
+
     # Connect to SQLite
     conn = sqlite3.connect("business_app.db")
     cur = conn.cursor()
@@ -18,6 +23,7 @@ def main():
     """)
 
     users = [
+        ("admin", "admin", 7270000000, "admin", "admin"),
         ("John", "Smith", 7270000001, "john.smith@tesabiz.com", "john1"),
         ("Jane", "Doe", 7270000002, "jane.doe@tesabiz.com", "joe1")
     ]
@@ -59,25 +65,28 @@ def main():
     )
 
 
-    # Create user favorite table
+    # Create user_favorite table
     cur.execute("""
         CREATE TABLE IF NOT EXISTS user_favorite (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
             business_id INTEGER NOT NULL,
-            UNIQUE(user_id,business_id)
+            UNIQUE(user_id, business_id)
         )
     """)
 
-
-    # Create business rating table
+    # Create business_rating table
     cur.execute("""
         CREATE TABLE IF NOT EXISTS business_rating (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             business_id INTEGER NOT NULL,
-            rating INTEGER NOT NULL
+            user_id INTEGER NOT NULL,
+            rating INTEGER NOT NULL,
+            UNIQUE(user_id, business_id)
         )
     """)
+
+
 
 
 
