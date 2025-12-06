@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Businesses</title>
+
+    <script>
+    function sortTable(col) {
+        let table = document.getElementById("bizTable");
+        let rows = [...table.rows].slice(1);
+
+        let sorted = rows.sort((a, b) =>
+            a.cells[col].innerText.localeCompare(b.cells[col].innerText)
+        );
+
+        for (let r of sorted) table.appendChild(r);
+    }
+    </script>
+</head>
+
+<body>
+
+<h2>Welcome, {{ name }}!</h2>
+<a href="/logout">Logout</a>
+<br><br>
+
+<table border="1" id="bizTable">
+    <tr>
+        <th onclick="sortTable(0)">Name</th>
+        <th onclick="sortTable(1)">Address</th>
+        <th onclick="sortTable(2)">Category</th>
+        <th onclick="sortTable(3)">Website</th>
+        <th onclick="sortTable(4)">Phone</th>
+        <th onclick="sortTable(5)">Coupons</th>
+        <th onclick="sortTable(6)">Ratings</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for b in businesses %}
+    <tr>
+        <td>{{ b[1] }}</td>
+        <td>{{ b[2] }}</td>
+        <td>{{ b[3] }}</td>
+        <td><a href="{{ b[4] }}" target="_blank">{{ b[4] }}</a></td>
+        <td>{{ b[5] }}</td>
+        <td>{{ b[6] }}</td>
+        <td>{{ b[7] }}</td>
+
+        <td>
+            <a href="/rate/{{ b[0] }}/5">Rate 5★</a> |
+            <a href="/favorite/{{ b[0] }}">Favorite</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
